@@ -349,7 +349,8 @@ void WalletGreen::initWithKeys(const std::string& path, const std::string& passw
   prefix->version = static_cast<uint8_t>(WalletSerializerV2::SERIALIZATION_VERSION);
   prefix->nextIv = Crypto::rand<Crypto::chacha8_iv>();
 
-  Crypto::generate_chacha8_key(password, m_key);
+  Crypto::cn_pow_hash cnContext;
+  Crypto::generate_chacha8_key(cnContext, password, m_key);
 
   uint64_t creationTimestamp;
 
@@ -427,7 +428,8 @@ void WalletGreen::exportWallet(const std::string& path, bool encrypt, WalletSave
     if (encrypt) {
       newStorageKey = m_key;
     } else {
-      generate_chacha8_key("", newStorageKey);
+      cn_pow_hash cnContext;
+      generate_chacha8_key(cnContext,"", newStorageKey);
     }
 
     copyContainerStoragePrefix(m_containerStorage, m_key, newStorage, newStorageKey);

@@ -569,7 +569,7 @@ std::vector<uint64_t> cumulativeDifficulties_o(cumulativeDifficulties);
   return (low + timeSpan - 1) / timeSpan;  // with version
 }
 
-bool Currency::checkProofOfWorkV1(const CachedBlock& block, uint64_t currentDifficulty) const {
+bool Currency::checkProofOfWorkV1(Crypto::cn_pow_hash& context, const CachedBlock& block, uint64_t currentDifficulty) const {
   if (BLOCK_MAJOR_VERSION_1 != block.getBlock().majorVersion) {
     return false;
   }
@@ -577,7 +577,7 @@ bool Currency::checkProofOfWorkV1(const CachedBlock& block, uint64_t currentDiff
   return check_hash(block.getBlockLongHash(), currentDifficulty);
 }
 
-bool Currency::checkProofOfWorkV2(const CachedBlock& cachedBlock, uint64_t currentDifficulty) const {
+bool Currency::checkProofOfWorkV2(Crypto::cn_pow_hash& context, const CachedBlock& cachedBlock, uint64_t currentDifficulty) const {
   const auto& block = cachedBlock.getBlock();
   if (block.majorVersion < BLOCK_MAJOR_VERSION_2) {
     return false;
@@ -609,7 +609,7 @@ bool Currency::checkProofOfWorkV2(const CachedBlock& cachedBlock, uint64_t curre
   return true;
 }
 
-bool Currency::checkProofOfWork(const CachedBlock& block, uint64_t currentDiffic) const {
+bool Currency::checkProofOfWork(Crypto::cn_pow_hash& context, const CachedBlock& block, uint64_t currentDiffic) const {
   switch (block.getBlock().majorVersion) {
   case BLOCK_MAJOR_VERSION_1:
     return checkProofOfWorkV1(block, currentDiffic);
