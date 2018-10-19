@@ -128,7 +128,7 @@ private:
   System::Dispatcher& dispatcher;
   System::ContextGroup contextGroup;
   Logging::LoggerRef logger;
-  Crypto::cn_pow_hash cryptoContext;
+  Crypto::cn_pow_hash;
   Checkpoints checkpoints;
   std::unique_ptr<IUpgradeManager> upgradeManager;
   std::vector<std::unique_ptr<IBlockchainCache>> chainsStorage;

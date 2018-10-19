@@ -91,7 +91,7 @@ void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threa
 void Miner::workerFunc(const BlockTemplate& blockTemplate, uint64_t difficulty, uint32_t nonceStep) {
   try {
     BlockTemplate block = blockTemplate;
-    Crypto::cn_pow_hash cryptoContext;
+    Crypto::cn_pow_hash;
 
     while (m_state == MiningState::MINING_IN_PROGRESS) {
       CachedBlock cachedBlock(block);
