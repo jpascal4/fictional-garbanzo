@@ -68,7 +68,7 @@ TurtleCoind --print-genesis-tx --genesis-block-reward-address TRTLv2Fyavy8CXG8BP
 * You should see your premine appear in the previously generated wallet.
 
 */
-const char     GENESIS_COINBASE_TX_HEX[]                     = "013201ff000280f4f6905d02fa8ac732a02b2eeb1cb34cc48e4ddb2ab073bf4731bf070c8b569d8430cf1e3180f4f6905d02ede22658d9e9b9f3c1019b4b6a5b2a9797668a99a8ec3355533621b6febeb1a42101097e2d62ad58f6e1463bb3dea7d4cd4221e5fffb2cd3ca69e437c61b9f896d18";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff000180e8eda1ba0102d0c75826c2f5c0e2e3eb082c66b0225fbef62f4df14bcf42150e7617b0291749210142a0214c40b4161a575ed4427aa009e29a907647af2699b7505fb3c7986d9d81";
 
 /* This is the unix timestamp of the first "mined" block (technically block 2, not the genesis block)
    You can get this value by doing "print_block 2" in TurtleCoind. It is used to know what timestamp
@@ -225,7 +225,7 @@ const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 const char     LATEST_VERSION_URL[]                          = "https://bloc.money";
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
-    {  0x11, 0x21, 0x32, 0xf2, 0x2f, 0x92, 0xc2, 0x23, 0x22, 0x8f, 0x8c, 0x12, 0x37, 0x27, 0x9d, 0x98  }
+    {  0x21, 0x21, 0x32, 0xf2, 0x2f, 0x29, 0x2c, 0x23, 0x22, 0x8f, 0x8c, 0x12, 0x37, 0x27, 0x9d, 0x98  }
 };
 
 const char* const SEED_NODES[] = {
