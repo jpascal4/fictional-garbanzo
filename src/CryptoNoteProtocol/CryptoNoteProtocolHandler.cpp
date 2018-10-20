@@ -616,7 +616,7 @@ bool CryptoNoteProtocolHandler::on_connection_synchronized() {
       logger(INFO, BRIGHT_BLUE) << "===[ BLOC.MONEY Tip! ]=============================" << ENDL ;
       logger(INFO, WHITE) << " Always exit BLOCd and blocwallet with the \"exit\" command to preserve your chain and wallet data." << ENDL ;
       logger(INFO, WHITE) << " Use the \"help\" command to see a list of available commands." << ENDL ;
-      logger(INFO, WHITE) << " Use the \"export_keys\" command in zedwallet to display your keys for restoring a corrupted wallet." << ENDL ;
+      logger(INFO, WHITE) << " Use the \"export_keys\" command in BLOCWallet to display your keys for restoring a corrupted wallet." << ENDL ;
       logger(INFO, WHITE) << " If you need more assistance, visit the #HELP channel in the BLOC Discord Chat - or join us on Telegram https://t.me/bloc_money" << ENDL ;
       logger(INFO, BRIGHT_BLUE) << "===================================================" << ENDL << ENDL ;
 
