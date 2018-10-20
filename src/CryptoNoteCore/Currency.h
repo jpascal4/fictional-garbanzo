@@ -56,7 +56,8 @@ namespace CryptoNote {
         uint64_t moneySupply() const { return m_moneySupply; }
         uint64_t finalSubsidy() const { return m_finalSubsidy; }
         unsigned int emissionSpeedFactor() const { return m_emissionSpeedFactor; }
-        
+        uint64_t genesisBlockReward() const { return m_genesisBlockReward; }
+
         size_t rewardBlocksWindow() const { return m_rewardBlocksWindow; }
         size_t zawyDifficultyV2() const { return m_zawyDifficultyV2; }
         uint8_t zawyDifficultyBlockVersion() const { return m_zawyDifficultyBlockVersion; }
@@ -70,6 +71,8 @@ namespace CryptoNote {
         uint64_t minimumFee() const { return m_mininumFee; }
         uint64_t defaultDustThreshold() const { return m_defaultDustThreshold; }
         
+        uint64_t defaultFusionDustThreshold() const { return m_defaultDustThreshold; }
+
         uint64_t difficultyTarget() const { return m_difficultyTarget; }
         size_t difficultyWindow() const { return m_difficultyWindow; }
         size_t difficultyWindowByBlockVersion(uint8_t blockMajorVersion) const;
@@ -108,6 +111,7 @@ namespace CryptoNote {
         const std::string& blockIndexesFileName() const { return m_blockIndexesFileName; }
         const std::string& txPoolFileName() const { return m_txPoolFileName; }
         
+        bool isBlockexplorer() const { return m_isBlockexplorer; }
         bool isTestnet() const { return m_testnet; }
         
         const BlockTemplate& genesisBlock() const { return cachedGenesisBlock->getBlock(); }
@@ -167,6 +171,7 @@ namespace CryptoNote {
         uint64_t m_moneySupply;
         uint64_t m_finalSubsidy;
         unsigned int m_emissionSpeedFactor;
+        uint64_t m_genesisBlockReward;
         
         size_t m_rewardBlocksWindow;
         size_t m_zawyDifficultyV2;
@@ -220,6 +225,7 @@ namespace CryptoNote {
         static const std::vector<uint64_t> PRETTY_AMOUNTS;
         
         bool m_testnet;
+        bool m_isBlockexplorer;
         
         BlockTemplate genesisBlockTemplate;
         std::unique_ptr<CachedBlock> cachedGenesisBlock;
@@ -241,6 +247,8 @@ namespace CryptoNote {
             return std::move(m_currency);
         }
         
+        Transaction generateGenesisTransaction();
+        Transaction generateGenesisTransaction(const std::vector<AccountPublicAddress>& targets);
         CurrencyBuilder& maxBlockNumber(uint32_t val) { m_currency.m_maxBlockHeight = val; return *this; }
         CurrencyBuilder& maxBlockBlobSize(size_t val) { m_currency.m_maxBlockBlobSize = val; return *this; }
         CurrencyBuilder& maxTxSize(size_t val) { m_currency.m_maxTxSize = val; return *this; }
@@ -253,7 +261,8 @@ namespace CryptoNote {
         CurrencyBuilder& moneySupply(uint64_t val) { m_currency.m_moneySupply = val; return *this; }
         CurrencyBuilder& finalSubsidy(uint64_t val) { m_currency.m_finalSubsidy = val; return *this; }
         CurrencyBuilder& emissionSpeedFactor(unsigned int val);
-        
+        CurrencyBuilder& genesisBlockReward(uint64_t val) { m_currency.m_genesisBlockReward = val; return *this; }
+
         CurrencyBuilder& rewardBlocksWindow(size_t val) { m_currency.m_rewardBlocksWindow = val; return *this; }
         CurrencyBuilder& zawyDifficultyV2(size_t val) { m_currency.m_zawyDifficultyV2 = val; return *this; }
         CurrencyBuilder& zawyDifficultyBlockVersion(uint8_t val) { m_currency.m_zawyDifficultyBlockVersion = val; return *this; }
@@ -301,6 +310,7 @@ namespace CryptoNote {
         CurrencyBuilder& blockIndexesFileName(const std::string& val) { m_currency.m_blockIndexesFileName = val; return *this; }
         CurrencyBuilder& txPoolFileName(const std::string& val) { m_currency.m_txPoolFileName = val; return *this; }
         
+        CurrencyBuilder& isBlockexplorer(const bool val) { m_currency.m_isBlockexplorer = val; return *this; }
         CurrencyBuilder& testnet(bool val) { m_currency.m_testnet = val; return *this; }
         
     private:

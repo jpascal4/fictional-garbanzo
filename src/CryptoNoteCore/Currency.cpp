@@ -307,7 +307,7 @@ namespace CryptoNote {
         
         uint64_t inputAmount = 0;
         for (auto amount: inputsAmounts) {
-            if (amount < defaultDustThreshold()) {
+            if (amount < defaultFusionDustThreshold()) {
                 return false;
             }
             
@@ -316,7 +316,7 @@ namespace CryptoNote {
         
         std::vector<uint64_t> expectedOutputsAmounts;
         expectedOutputsAmounts.reserve(outputsAmounts.size());
-        decomposeAmount(inputAmount, defaultDustThreshold(), expectedOutputsAmounts);
+        decomposeAmount(inputAmount, defaultFusionDustThreshold(), expectedOutputsAmounts);
         std::sort(expectedOutputsAmounts.begin(), expectedOutputsAmounts.end());
         
         return expectedOutputsAmounts == outputsAmounts;
@@ -772,7 +772,8 @@ namespace CryptoNote {
         moneySupply(parameters::MONEY_SUPPLY);
         finalSubsidy(parameters::FINAL_SUBSIDY_PER_MINUTE);
         emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);
-        
+        genesisBlockReward(parameters::GENESIS_BLOCK_REWARD);
+
         rewardBlocksWindow(parameters::CRYPTONOTE_REWARD_BLOCKS_WINDOW);
         zawyDifficultyV2(parameters::ZAWY_DIFFICULTY_V2);
         zawyDifficultyBlockVersion(parameters::ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION);
@@ -820,7 +821,53 @@ namespace CryptoNote {
         blockIndexesFileName(parameters::CRYPTONOTE_BLOCKINDEXES_FILENAME);
         txPoolFileName(parameters::CRYPTONOTE_POOLDATA_FILENAME);
         
+        isBlockexplorer(false);
         testnet(false);
+    }
+
+    Transaction CurrencyBuilder::generateGenesisTransaction() {
+      CryptoNote::Transaction tx;
+      CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();
+      m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, ac, tx); // zero fee in genesis
+      return tx;
+    }
+
+    Transaction CurrencyBuilder::generateGenesisTransaction(const std::vector<AccountPublicAddress>& targets) {
+        assert(!targets.empty());
+    
+        CryptoNote::Transaction tx;
+        tx.inputs.clear();
+        tx.outputs.clear();
+        tx.extra.clear();
+        tx.version = CURRENT_TRANSACTION_VERSION;
+        tx.unlockTime = m_currency.m_minedMoneyUnlockWindow;
+        KeyPair txkey = generateKeyPair();
+        addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);
+        BaseInput in;
+        in.blockIndex = 0;
+        tx.inputs.push_back(in);
+        uint64_t block_reward = m_currency.m_genesisBlockReward;
+        uint64_t target_amount = block_reward / targets.size();
+        uint64_t first_target_amount = target_amount + block_reward % targets.size();
+        for (size_t i = 0; i < targets.size(); ++i) {
+          Crypto::KeyDerivation derivation = boost::value_initialized<Crypto::KeyDerivation>();
+          Crypto::PublicKey outEphemeralPubKey = boost::value_initialized<Crypto::PublicKey>();
+          bool r = Crypto::generate_key_derivation(targets[i].viewPublicKey, txkey.secretKey, derivation);
+          if (r) {}
+          assert(r == true);
+    //      CHECK_AND_ASSERT_MES(r, false, "while creating outs: failed to generate_key_derivation(" << targets[i].viewPublicKey << ", " << txkey.sec << ")");
+          r = Crypto::derive_public_key(derivation, i, targets[i].spendPublicKey, outEphemeralPubKey);
+          assert(r == true);
+    //     CHECK_AND_ASSERT_MES(r, false, "while creating outs: failed to derive_public_key(" << derivation << ", " << i << ", " << targets[i].spendPublicKey << ")");
+          KeyOutput tk;
+          tk.key = outEphemeralPubKey;
+          TransactionOutput out;
+          out.amount = (i == 0) ? first_target_amount : target_amount;
+          std::cout << "outs: " << std::to_string(out.amount) << std::endl;
+          out.target = tk;
+          tx.outputs.push_back(out);
+        }
+        return tx;
     }
     
     CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {
