@@ -20,7 +20,7 @@ const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint32_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
 const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
 const size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
-const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 246791582;
+const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 249588424;
 const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 50;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3         = 3 * DIFFICULTY_TARGET;
@@ -31,13 +31,13 @@ const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V3          = 11;
 
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                  = UINT64_C(500000000000);
-const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX                   = 200;
+const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX                   = 40500;
 const size_t ZAWY_DIFFICULTY_V2                              = 0;
 const uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION       = 4;
 
-const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 200;
-const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 200;
-const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 200;
+const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 40500;
+const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 40500;
+const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 40500;
 
 const uint64_t DIFFICULTY_WINDOW_V3                          = 60;
 const uint64_t DIFFICULTY_BLOCKS_COUNT_V3                    = DIFFICULTY_WINDOW_V3 + 1;
@@ -142,7 +142,7 @@ const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_V2                             = 50;
 const uint32_t UPGRADE_HEIGHT_V3                             = 100;
-const uint32_t UPGRADE_HEIGHT_V4                             = 200; // Upgrade height for CN-Lite Variant 1 switch.
+const uint32_t UPGRADE_HEIGHT_V4                             = 40500; // Upgrade height for CN-Lite Variant 1 switch.
 const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V4;
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -229,8 +229,11 @@ const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 };
 
 const char* const SEED_NODES[] = {
-  	"testnet1.bloc.money:2082",//atlantic
-	"testnet2.bloc.money:2082"//pacific
+  	"174.138.59.135:2082",//atlantic
+	"138.197.208.94:2082",//pacific
+	"95.216.3.162:2082",//baltic
+	"88.198.57.162:2082",//europe
+	"206.189.42.115:2082"//asia
 };
 } // CryptoNote
 
