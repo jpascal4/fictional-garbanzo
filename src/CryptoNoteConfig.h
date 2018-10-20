@@ -24,7 +24,6 @@ const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 246791582;
 const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 50;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3         = 3 * DIFFICULTY_TARGET;
-const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V4         = 6 * DIFFICULTY_TARGET;
 
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 60;
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V3          = 11;
@@ -36,12 +35,11 @@ const size_t ZAWY_DIFFICULTY_V2                              = 0;
 const uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION       = 4;
 
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 200;
-const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 200;
-const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 200;
 
 const uint64_t DIFFICULTY_WINDOW_V3                          = 60;
 const uint64_t DIFFICULTY_BLOCKS_COUNT_V3                    = DIFFICULTY_WINDOW_V3 + 1;
 
+const uint64_t FINAL_SUBSIDY_PER_MINUTE                             = UINT64_C(0);
 const unsigned EMISSION_SPEED_FACTOR                         = 21;
 static_assert(EMISSION_SPEED_FACTOR <= 8 * sizeof(uint64_t), "Bad EMISSION_SPEED_FACTOR");
 
@@ -126,6 +124,8 @@ static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDO
 const size_t   MAX_BLOCK_SIZE_INITIAL                        = 20 * 1024;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR         = 100 * 1024;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR       = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
+const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR_V2        = 35 * 100 * 1024;
+const size_t   MAX_BLOCK_SIZE_ALLOWED_EVERY_N_BLOCK        = 10; // every 10 blocks, 1 big block is allowed
 const uint64_t MAX_EXTRA_SIZE                                = 140000;
 
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
@@ -140,6 +140,7 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
+const uint32_t UPGRADE_HEIGHT_MAX_BLOCK_SIZE                 = 65000;
 const uint32_t UPGRADE_HEIGHT_V2                             = 50;
 const uint32_t UPGRADE_HEIGHT_V3                             = 100;
 const uint32_t UPGRADE_HEIGHT_V4                             = 200; // Upgrade height for CN-Lite Variant 1 switch.

@@ -5,9 +5,18 @@
 #include <stdint.h>
 #include <vector>
 
-uint64_t nextDifficultyV5(std::vector<uint64_t> timestamps, std::vector<uint64_t> cumulativeDifficulties);
+#pragma once
 
-uint64_t nextDifficultyV4(std::vector<uint64_t> timestamps, std::vector<uint64_t> cumulativeDifficulties);
+#include <cstdint>
+#include <vector>
+
+#include "crypto/hash.h"
+
+namespace CryptoNote {
+    typedef std::uint64_t Difficulty;
+    bool check_hash(const Crypto::Hash &hash, Difficulty difficulty);
+    
+}
 
 uint64_t nextDifficultyV3(std::vector<uint64_t> timestamps, std::vector<uint64_t> cumulativeDifficulties);
 
