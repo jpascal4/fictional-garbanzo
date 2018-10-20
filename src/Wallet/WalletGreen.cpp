@@ -3350,6 +3350,9 @@ size_t WalletGreen::createFusionTransaction(uint64_t threshold, uint16_t mixin,
     m_logger(ERROR, BRIGHT_RED) << "Unable to create fusion transaction";
     throw std::runtime_error("Unable to create fusion transaction");
   }
+    
+  m_logger(INFO, BRIGHT_WHITE) << "Fusion transaction size: " << transactionSize << std::endl;
+  m_logger(INFO, BRIGHT_WHITE) << "Fusion transaction amount: " << transactionAmount << std::endl;
 
   id = validateSaveAndSendTransaction(*fusionTransaction, {}, true, true);
   return id;
