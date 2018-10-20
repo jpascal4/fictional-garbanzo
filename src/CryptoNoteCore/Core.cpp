@@ -1954,8 +1954,14 @@ void Core::fillBlockTemplate(BlockTemplate& block, size_t medianSize, size_t max
     const CachedTransaction& transaction = *it;
 
     auto transactionBlobSize = transaction.getTransactionBinaryArray().size();
-    if (currency.fusionTxMaxSize() < transactionsSize + transactionBlobSize) {
-      continue;
+      
+   /*
+    * Its possible that a collection of fusion transactions could exceed the maxTotalSize.
+    * When submitting a block, the only check is done against maxTotalSize, so we need to ensure this transaction
+    * can actually fit before adding it
+    */
+    if (currency.fusionTxMaxSize() < transactionsSize + transactionBlobSize || maxTotalSize < transactionsSize + transactionBlobSize) {
+         continue;
     }
 
     if (!spentInputsChecker.haveSpentInputs(transaction.getTransaction())) {
@@ -1966,9 +1972,11 @@ void Core::fillBlockTemplate(BlockTemplate& block, size_t medianSize, size_t max
   }
 
   for (const auto& cachedTransaction : poolTransactions) {
-    size_t blockSizeLimit = (cachedTransaction.getTransactionFee() == 0) ? medianSize : maxTotalSize;
-
-    if (blockSizeLimit < transactionsSize + cachedTransaction.getTransactionBinaryArray().size()) {
+    /*
+    * Similar to the above.  Checking the medianSize with a txFee of 0 could emplace a transaction that would exceed
+    * the maxTotalSize allowed.  Lets just ensure the transaction can fit.
+    */
+    if (maxTotalSize < transactionsSize + cachedTransaction.getTransactionBinaryArray().size()) {
       continue;
     }
 
