@@ -385,3 +385,4 @@ bool saveAddressBook(AddressBook addressBook)
 
     return true;
 }
+
