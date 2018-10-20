@@ -542,6 +542,39 @@ void WalletGreen::load(const std::string& path, const std::string& password) {
   std::string extra;
   load(path, password, extra);
 }
+    
+void WalletGreen::resetPendingTransactions() {
+    m_logger(INFO, BRIGHT_WHITE) << "Clearing transaction data";
+    System::EventLock lk(m_readyEvent);
+    try
+    {
+        //purge from wallet
+        throwIfNotInitialized();
+        throwIfStopped();
+        throwIfTrackingMode();
+        auto txns = getUnconfirmedTransactions();
+        m_logger(INFO, BRIGHT_WHITE) << "Purging " << txns.size() << " transactions...";
+        for (auto thisTrans : txns) {
+            // WalletTransaction transaction
+            m_logger(INFO, BRIGHT_WHITE) << "Found unconfirmed TXN " << thisTrans.transaction.hash << " " << thisTrans.transaction.state << " block height " <<
+            thisTrans.transaction.blockHeight;
+
+            try {
+                Tools::ScopeExit releaseContext([this, &thisTrans] {
+                    m_dispatcher.yield();
+                });
+                removeUnconfirmedTransaction(thisTrans.transaction.hash);
+            }
+            catch (...) {
+                m_logger(ERROR, BRIGHT_RED) << "eRROR purging txn " << thisTrans.transaction.hash;
+            }
+            m_logger(INFO, BRIGHT_WHITE) << "Finished purging txn";
+        }
+    }
+    catch (const std::exception& e) {
+        m_logger(ERROR, BRIGHT_RED) << "Failed to remove unconfirmed txn: " << e.what();
+    }
+}
 
 void WalletGreen::loadContainerStorage(const std::string& path) {
   try {
@@ -1140,9 +1173,9 @@ std::string WalletGreen::addWallet(const NewAddressData &addressData, uint64_t s
 
   auto insertIt = index.find(spendPublicKey);
   if (insertIt != index.end()) {
-    m_logger(ERROR, BRIGHT_RED) << "Failed to add wallet: address already exists, " <<
-      m_currency.accountAddressAsString(AccountPublicAddress{spendPublicKey, m_viewPublicKey});
-    throw std::system_error(make_error_code(error::ADDRESS_ALREADY_EXISTS));
+    m_logger(ERROR, BRIGHT_RED) << "Failed to add wallet: address already exists, " << std::endl;
+    auto address = m_currency.accountAddressAsString({ spendPublicKey, m_viewPublicKey });
+    return address;
   }
   
   try {
@@ -1270,8 +1303,7 @@ uint64_t WalletGreen::getCurrentTimestampAdjusted()
     std::initializer_list<uint64_t> limits =
     {
         CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT,
-        CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3,
-        CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V4
+        CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3
     };
 
     /* Get the largest adjustment possible */
@@ -1545,7 +1577,7 @@ uint64_t WalletGreen::getBalanceMinusDust(const std::vector<std::string>& addres
         needed,
         /* Don't include dust outputs */
         false,
-        m_currency.defaultDustThreshold(m_node.getLastKnownBlockHeight()),
+        m_currency.defaultDustThreshold(),
         std::move(wallets),
         unused
     );
@@ -1565,7 +1597,7 @@ void WalletGreen::prepareTransaction(std::vector<WalletOuts>&& wallets,
   preparedTransaction.neededMoney = countNeededMoney(preparedTransaction.destinations, fee);
 
   std::vector<OutputToTransfer> selectedTransfers;
-  uint64_t foundMoney = selectTransfers(preparedTransaction.neededMoney, mixIn == 0, m_currency.defaultDustThreshold(m_node.getLastKnownBlockHeight()), std::move(wallets), selectedTransfers);
+  uint64_t foundMoney = selectTransfers(preparedTransaction.neededMoney, mixIn == 0, m_currency.defaultDustThreshold(), std::move(wallets), selectedTransfers);
 
   if (foundMoney < preparedTransaction.neededMoney) {
     m_logger(ERROR, BRIGHT_RED) << "Failed to create transaction: not enough money. Needed " << m_currency.formatAmount(preparedTransaction.neededMoney) <<
@@ -1583,10 +1615,10 @@ void WalletGreen::prepareTransaction(std::vector<WalletOuts>&& wallets,
   std::vector<InputInfo> keysInfo;
   prepareInputs(selectedTransfers, mixinResult, mixIn, keysInfo);
 
-  uint64_t donationAmount = pushDonationTransferIfPossible(donation, foundMoney - preparedTransaction.neededMoney, m_currency.defaultDustThreshold(m_node.getLastKnownBlockHeight()), preparedTransaction.destinations);
+  uint64_t donationAmount = pushDonationTransferIfPossible(donation, foundMoney - preparedTransaction.neededMoney, m_currency.defaultDustThreshold(), preparedTransaction.destinations);
   preparedTransaction.changeAmount = foundMoney - preparedTransaction.neededMoney - donationAmount;
 
-  std::vector<ReceiverAmounts> decomposedOutputs = splitDestinations(preparedTransaction.destinations, m_currency.defaultDustThreshold(m_node.getLastKnownBlockHeight()), m_currency);
+  std::vector<ReceiverAmounts> decomposedOutputs = splitDestinations(preparedTransaction.destinations, m_currency.defaultDustThreshold(), m_currency);
   if (preparedTransaction.changeAmount != 0) {
     WalletTransfer changeTransfer;
     changeTransfer.type = WalletTransferType::CHANGE;
@@ -1594,7 +1626,7 @@ void WalletGreen::prepareTransaction(std::vector<WalletOuts>&& wallets,
     changeTransfer.amount = static_cast<int64_t>(preparedTransaction.changeAmount);
     preparedTransaction.destinations.emplace_back(std::move(changeTransfer));
 
-    auto splittedChange = splitAmount(preparedTransaction.changeAmount, changeDestination, m_currency.defaultDustThreshold(m_node.getLastKnownBlockHeight()));
+    auto splittedChange = splitAmount(preparedTransaction.changeAmount, changeDestination, m_currency.defaultDustThreshold());
     decomposedOutputs.emplace_back(std::move(splittedChange));
   }
 
@@ -3250,10 +3282,10 @@ size_t WalletGreen::createFusionTransaction(uint64_t threshold, uint16_t mixin,
 
   uint32_t height = m_node.getLastKnownBlockHeight();
 
-  if (threshold <= m_currency.defaultFusionDustThreshold(height)) {
+  if (threshold <= m_currency.defaultFusionDustThreshold()) {
     m_logger(ERROR, BRIGHT_RED) << "Fusion transaction threshold is too small. Threshold " << m_currency.formatAmount(threshold) <<
-      ", minimum threshold " << m_currency.formatAmount(m_currency.defaultFusionDustThreshold(height) + 1);
-    throw std::runtime_error("Threshold must be greater than " + m_currency.formatAmount(m_currency.defaultFusionDustThreshold(height)));
+      ", minimum threshold " << m_currency.formatAmount(m_currency.defaultFusionDustThreshold() + 1);
+    throw std::runtime_error("Threshold must be greater than " + m_currency.formatAmount(m_currency.defaultFusionDustThreshold()));
   }
 
   if (m_walletsContainer.get<RandomAccessIndex>().size() == 0) {
@@ -3311,12 +3343,15 @@ size_t WalletGreen::createFusionTransaction(uint64_t threshold, uint16_t mixin,
     transactionSize = getTransactionSize(*fusionTransaction);
 
     ++round;
-  } while (transactionSize > m_currency.fusionTxMaxSize() && fusionInputs.size() >= m_currency.fusionTxMinInputCount());
+  } while ((transactionSize > m_currency.fusionTxMaxSize() || transactionSize > getMaxTxSize()) && fusionInputs.size() >= m_currency.fusionTxMinInputCount());
 
   if (fusionInputs.size() < m_currency.fusionTxMinInputCount()) {
     m_logger(ERROR, BRIGHT_RED) << "Unable to create fusion transaction";
     throw std::runtime_error("Unable to create fusion transaction");
   }
+    
+  m_logger(INFO, BRIGHT_WHITE) << "Fusion transaction size: " << transactionSize << std::endl;
+  m_logger(INFO, BRIGHT_WHITE) << "Fusion transaction amount: " << transactionAmount << std::endl;
 
   id = validateSaveAndSendTransaction(*fusionTransaction, {}, true, true);
   return id;
@@ -3392,7 +3427,7 @@ bool WalletGreen::isFusionTransaction(const WalletTransaction& walletTx) const {
   if (outputsSum != inputsSum || outputsSum != txInfo.totalAmountOut || inputsSum != txInfo.totalAmountIn) {
     return false;
   } else {
-    return m_currency.isFusionTransaction(inputsAmounts, outputsAmounts, 0, m_node.getLastKnownBlockHeight()); //size = 0 here because can't get real size of tx in wallet.
+    return m_currency.isFusionTransaction(inputsAmounts, outputsAmounts, 0); //size = 0 here because can't get real size of tx in wallet.
   }
 }
 
@@ -3411,7 +3446,7 @@ IFusionManager::EstimateResult WalletGreen::estimate(uint64_t threshold, const s
   for (size_t walletIndex = 0; walletIndex < walletOuts.size(); ++walletIndex) {
     for (auto& out : walletOuts[walletIndex].outs) {
       uint8_t powerOfTen = 0;
-      if (m_currency.isAmountApplicableInFusionTransactionInput(out.amount, threshold, powerOfTen, m_node.getLastKnownBlockHeight())) {
+      if (m_currency.isAmountApplicableInFusionTransactionInput(out.amount, threshold, powerOfTen)) {
         assert(powerOfTen < std::numeric_limits<uint64_t>::digits10 + 1);
         bucketSizes[powerOfTen]++;
       }
@@ -3439,7 +3474,7 @@ std::vector<WalletGreen::OutputToTransfer> WalletGreen::pickRandomFusionInputs(c
   for (size_t walletIndex = 0; walletIndex < walletOuts.size(); ++walletIndex) {
     for (auto& out : walletOuts[walletIndex].outs) {
       uint8_t powerOfTen = 0;
-      if (m_currency.isAmountApplicableInFusionTransactionInput(out.amount, threshold, powerOfTen, m_node.getLastKnownBlockHeight())) {
+      if (m_currency.isAmountApplicableInFusionTransactionInput(out.amount, threshold, powerOfTen)) {
         allFusionReadyOuts.push_back({std::move(out), walletOuts[walletIndex].wallet});
         assert(powerOfTen < std::numeric_limits<uint64_t>::digits10 + 1);
         bucketSizes[powerOfTen]++;
@@ -3755,8 +3790,7 @@ size_t WalletGreen::getMaxTxSize()
 
     size_t y = 125000;
 
-    return std::min(x, y) - CryptoNote::parameters
-                                      ::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;
+    return ceil((std::min(x, y) / 2.0) - CryptoNote::parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE);
 }
 
 } //namespace CryptoNote

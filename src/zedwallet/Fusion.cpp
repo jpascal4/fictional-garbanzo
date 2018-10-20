@@ -94,40 +94,18 @@ bool optimize(CryptoNote::WalletGreen &wallet, uint64_t threshold,
 {
     std::vector<Crypto::Hash> fusionTransactionHashes;
 
-    while (true)
-    {
-        /* Create as many fusion transactions until we can't send anymore,
-           either because balance is locked too much or we can no longer
-           optimize anymore transactions */
-        const size_t tmpFusionTxID = makeFusionTransaction(
-            wallet, threshold, height
-        );
-
-        if (tmpFusionTxID == CryptoNote::WALLET_INVALID_TRANSACTION_ID)
-        {
-            break;
-        }
-        else
-        {
-            const CryptoNote::WalletTransaction w
-                = wallet.getTransaction(tmpFusionTxID);
-
-            fusionTransactionHashes.push_back(w.hash);
-
-            if (fusionTransactionHashes.size() == 1)
-            {
-                std::cout << SuccessMsg("Created 1 fusion transaction!")
-                          << std::endl;
-            }
-            else
-            {
-                std::cout << SuccessMsg("Created " 
-                            + std::to_string(fusionTransactionHashes.size())
-                                    + " fusion transactions!") << std::endl;
-            }
-        }
+    /* Create one fusion transaction and wait for it to complete.
+     If too many transactions are created, the block size will be too high
+     and will get stuck. */
+    
+    size_t tmpFusionTxID = makeFusionTransaction(wallet, threshold, height);
+    
+    if (tmpFusionTxID != CryptoNote::WALLET_INVALID_TRANSACTION_ID) {
+        const CryptoNote::WalletTransaction w = wallet.getTransaction(tmpFusionTxID);
+        fusionTransactionHashes.push_back(w.hash);
+        std::cout << SuccessMsg("Created 1 fusion transaction!") << std::endl;
     }
-
+    
     if (fusionTransactionHashes.empty())
     {
         return false;
@@ -157,6 +135,10 @@ bool optimize(CryptoNote::WalletGreen &wallet, uint64_t threshold,
     {
         const std::vector<CryptoNote::WalletTransactionWithTransfers> 
             unconfirmedTransactions = wallet.getUnconfirmedTransactions();
+
+        /* Create one fusion transaction and wait for it to complete.
+         If too many transactions are created, the block size will be too high
+         and will get stuck. */
 
         std::vector<Crypto::Hash> unconfirmedTxHashes;
 

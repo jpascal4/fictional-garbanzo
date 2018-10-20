@@ -74,6 +74,8 @@ public:
 
   virtual void deleteAddress(const std::string& address) override;
 
+  virtual void resetPendingTransactions();
+                        
   virtual uint64_t getActualBalance() const override;
   virtual uint64_t getActualBalance(const std::string& address) const override;
   virtual uint64_t getPendingBalance() const override;
@@ -120,6 +122,7 @@ public:
   virtual size_t createFusionTransaction(uint64_t threshold, uint16_t mixin,
     const std::vector<std::string>& sourceAddresses = {}, const std::string& destinationAddress = "") override;
   virtual bool isFusionTransaction(size_t transactionId) const override;
+  virtual bool isFusionTransaction(const WalletTransaction& walletTx) const override;
   virtual IFusionManager::EstimateResult estimate(uint64_t threshold, const std::vector<std::string>& sourceAddresses = {}) const override;
 
 protected:
@@ -239,8 +242,6 @@ protected:
   AccountKeys makeAccountKeys(const WalletRecord& wallet) const;
   size_t getTransactionId(const Crypto::Hash& transactionHash) const;
   void pushEvent(const WalletEvent& event);
-  bool isFusionTransaction(const WalletTransaction& walletTx) const;
-
   
   void prepareTransaction(std::vector<WalletOuts>&& wallets,
     const std::vector<WalletOrder>& orders,
