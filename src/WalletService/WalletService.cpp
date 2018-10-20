@@ -1189,6 +1189,11 @@ std::error_code WalletService::autoOptimize(std::string& transactionHash) {
         // Get all addresses in the container
         std::vector<std::string> addresses;
         getAddresses(addresses);
+        
+        if (addresses.empty()) {
+            return make_error_code(CryptoNote::error::WalletServiceErrorCode::ALREADY_OPTIMIZED);
+        }
+        
         // Determine which wallets can be optimized
         std::vector<WalletWithFusionCount> wallets;
         wallets.clear();
@@ -1212,7 +1217,7 @@ std::error_code WalletService::autoOptimize(std::string& transactionHash) {
                 wallets.push_back(WalletWithFusionCount(address, optimizable));
             }
         }
-        if (addresses.empty()) {
+        if (wallets.empty()) {
             return make_error_code(CryptoNote::error::WalletServiceErrorCode::ALREADY_OPTIMIZED);
         }
         // Sort the wallets
