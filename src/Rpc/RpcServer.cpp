@@ -129,6 +129,7 @@ std::unordered_map<std::string, RpcServer::RpcHandler<RpcServer::HandlerFunction
   { "/get_transaction_hashes_by_payment_id.bin", { binMethod<COMMAND_RPC_GET_TRANSACTION_HASHES_BY_PAYMENT_ID>(&RpcServer::onGetTransactionHashesByPaymentId), false } },
 
   // json handlers
+  { "/gettotalcoins", { jsonMethod<COMMAND_RPC_GET_TOTAL_COINS>(&RpcServer::on_get_total_coins), true } },
   { "/getinfo", { jsonMethod<COMMAND_RPC_GET_INFO>(&RpcServer::on_get_info), true } },
   { "/getheight", { jsonMethod<COMMAND_RPC_GET_HEIGHT>(&RpcServer::on_get_height), true } },
   { "/gettransactions", { jsonMethod<COMMAND_RPC_GET_TRANSACTIONS>(&RpcServer::on_get_transactions), false } },
@@ -889,6 +890,15 @@ bool RpcServer::f_on_transactions_pool_json(const F_COMMAND_RPC_GET_POOL::reques
 
   res.status = CORE_RPC_STATUS_OK;
   return true;
+}
+
+bool RpcServer::on_get_total_coins(const COMMAND_RPC_GET_TOTAL_COINS::request& req, COMMAND_RPC_GET_TOTAL_COINS::response& res) {	
+	uint32_t height = m_core.getTopBlockIndex();
+	Hash hash = m_core.getBlockHashByIndex(height);	
+	BlockDetails blkDetails = m_core.getBlockDetails(hash);
+	res.alreadyGeneratedCoins = std::to_string(blkDetails.alreadyGeneratedCoins);
+	res.status = CORE_RPC_STATUS_OK;
+	return true;
 }
 
 bool RpcServer::f_getMixin(const Transaction& transaction, uint64_t& mixin) {
