@@ -635,7 +635,7 @@ bool CryptoNoteProtocolHandler::on_connection_synchronized() {
       logger(INFO, WHITE) << " If you need more assistance, visit the #HELP channel in the BLOC Discord Chat - or join us on Telegram https://t.me/bloc_money" << ENDL ;
       logger(INFO, BRIGHT_BLUE) << "===================================================" << ENDL << ENDL ;
 
-      logger(INFO, BRIGHT_CYAN) <<
+      logger(INFO, BRIGHT_RED) <<
 
       #ifdef _WIN32
      "  ____  _      ____   _____   __  __  ____  _   _ ________     __\n"
@@ -645,9 +645,10 @@ bool CryptoNoteProtocolHandler::on_connection_synchronized() {
      " | |_) | |___| |__| | |____ _| |  | | |__| | |\  | |____   | |   \n"
      " |____/|______\____/ \_____(_)_|  |_|\____/|_| \_|______|  |_|  \n"
      "                                                                \n"
-     "╦╔╗╔  ╔╗ ╦  ╔═╗╔═╗  ╦ ╦╔═╗  ╔╦╗╦═╗╦ ╦╔═╗╔╦╗\n"
-     "║║║║  ╠╩╗║  ║ ║║    ║║║║╣    ║ ╠╦╝║ ║╚═╗ ║ \n"
-     "╩╝╚╝  ╚═╝╩═╝╚═╝╚═╝  ╚╩╝╚═╝   ╩ ╩╚═╚═╝╚═╝ ╩  \n"
+     "╔╦╗╔═╗╔═╗╔╦╗╔╗╔╔═╗╔╦╗\n"
+     " ║ ║╣ ╚═╗ ║ ║║║║╣  ║ \n"
+     " ╩ ╚═╝╚═╝ ╩ ╝╚╝╚═╝ ╩ \n"
+
      "                                                                \n"<< ENDL;
      #else
      "\n                            \n"
@@ -658,9 +659,9 @@ bool CryptoNoteProtocolHandler::on_connection_synchronized() {
      "██████╔╝███████╗╚██████╔╝╚██████╗██╗██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║   \n"
      "╚═════╝ ╚══════╝ ╚═════╝  ╚═════╝╚═╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝  \n"
  "\n                            \n"
-     "╦╔╗╔  ╔╗ ╦  ╔═╗╔═╗  ╦ ╦╔═╗  ╔╦╗╦═╗╦ ╦╔═╗╔╦╗\n"
-     "║║║║  ╠╩╗║  ║ ║║    ║║║║╣    ║ ╠╦╝║ ║╚═╗ ║ \n"
-     "╩╝╚╝  ╚═╝╩═╝╚═╝╚═╝  ╚╩╝╚═╝   ╩ ╩╚═╚═╝╚═╝ ╩  \n"
+     "╔╦╗╔═╗╔═╗╔╦╗╔╗╔╔═╗╔╦╗\n"
+     " ║ ║╣ ╚═╗ ║ ║║║║╣  ║ \n"
+     " ╩ ╚═╝╚═╝ ╩ ╝╚╝╚═╝ ╩ \n"
      "                                 \n" << ENDL;
       #endif
 
