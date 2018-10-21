@@ -1,22 +1,8 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2014-2018, The Monero Project
 // Copyright (c) 2018, The TurtleCoin Developers
-// Copyright (c) 2018-2019, The BLOC.MONEY Developers
 //
 // Please see the included LICENSE file for more information.
-// 
-// BLOC is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// BLOC is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with BLOC. If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
@@ -34,7 +20,7 @@ const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint32_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
 const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
 const size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
-const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 249588424;
+const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 246791582;
 const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 50;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3         = 3 * DIFFICULTY_TARGET;
@@ -44,11 +30,11 @@ const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V3          = 11;
 
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                  = UINT64_C(500000000000);
-const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX                   = 40500;
+const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX                   = 200;
 const size_t ZAWY_DIFFICULTY_V2                              = 0;
 const uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION       = 4;
 
-const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 40500;
+const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 200;
 
 const uint64_t DIFFICULTY_WINDOW_V3                          = 60;
 const uint64_t DIFFICULTY_BLOCKS_COUNT_V3                    = DIFFICULTY_WINDOW_V3 + 1;
@@ -80,7 +66,7 @@ TurtleCoind --print-genesis-tx --genesis-block-reward-address TRTLv2Fyavy8CXG8BP
 * You should see your premine appear in the previously generated wallet.
 
 */
-const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff000180e8eda1ba0102d0c75826c2f5c0e2e3eb082c66b0225fbef62f4df14bcf42150e7617b0291749210142a0214c40b4161a575ed4427aa009e29a907647af2699b7505fb3c7986d9d81";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "013201ff000280f4f6905d02fa8ac732a02b2eeb1cb34cc48e4ddb2ab073bf4731bf070c8b569d8430cf1e3180f4f6905d02ede22658d9e9b9f3c1019b4b6a5b2a9797668a99a8ec3355533621b6febeb1a42101097e2d62ad58f6e1463bb3dea7d4cd4221e5fffb2cd3ca69e437c61b9f896d18";
 
 /* This is the unix timestamp of the first "mined" block (technically block 2, not the genesis block)
    You can get this value by doing "print_block 2" in TurtleCoind. It is used to know what timestamp
@@ -88,7 +74,7 @@ const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff000180e8
 const uint64_t GENESIS_BLOCK_TIMESTAMP                       = 1512800692;
 
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
-const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 1000000; //size of block (bytes) after which reward for block calculated using block size
+const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 100000; //size of block (bytes) after which reward for block calculated using block size
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = 1000000;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = 1000000;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
@@ -157,7 +143,7 @@ const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_MAX_BLOCK_SIZE                 = 65000;
 const uint32_t UPGRADE_HEIGHT_V2                             = 50;
 const uint32_t UPGRADE_HEIGHT_V3                             = 100;
-const uint32_t UPGRADE_HEIGHT_V4                             = 40500; // Upgrade height for CN Haven.
+const uint32_t UPGRADE_HEIGHT_V4                             = 200; // Upgrade height for CN-Lite Variant 1 switch.
 const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V4;
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -171,7 +157,7 @@ const uint64_t FORK_HEIGHTS[] =
 	1,
 	50,
 	100,
-	40500,
+	200,
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
@@ -216,7 +202,6 @@ const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
 
 const int      P2P_DEFAULT_PORT                              =  2082;
 const int      RPC_DEFAULT_PORT                              =  2086;
-const int      SERVICE_DEFAULT_PORT                          =  8070;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
@@ -241,15 +226,12 @@ const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 const char     LATEST_VERSION_URL[]                          = "https://bloc.money";
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
-    {  0x21, 0x21, 0x32, 0xf2, 0x2f, 0x29, 0x2c, 0x23, 0x22, 0x8f, 0x8c, 0x12, 0x37, 0x27, 0x9d, 0x98  }
+    {  0x11, 0x21, 0x32, 0xf2, 0x2f, 0x92, 0xc2, 0x23, 0x22, 0x8f, 0x8c, 0x12, 0x37, 0x27, 0x9d, 0x98  }
 };
 
 const char* const SEED_NODES[] = {
-  	"174.138.59.135:2082",//atlantic
-	"138.197.208.94:2082",//pacific
-	"95.216.3.162:2082",//baltic
-	"88.198.57.162:2082",//europe
-	"206.189.42.115:2082"//asia
+  	"testnet1.bloc.money:2082",//atlantic
+	"testnet2.bloc.money:2082"//pacific
 };
 } // CryptoNote
 
