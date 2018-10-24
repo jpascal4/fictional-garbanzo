@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/34389545/35821974-62e0e25c-0a70-11e8-87dd-2cfffeb6ed47.png)
+![image](https://raw.githubusercontent.com/steve-fr/b2/c37d0204338cdbcf2a978d5798e09633e644f365/DOCS/BLOC-TESTNET-3.0.0.1.jpg)
 
 #### Master Build Status
 [![Build Status](https://travis-ci.org/bloc/bloc.svg?branch=master)](https://travis-ci.org/bloc/bloc) [![Build status](https://ci.appveyor.com/api/projects/status/github/bloc/bloc?branch=master&svg=true)](https://ci.appveyor.com/project/RocksteadyTC/bloc)
