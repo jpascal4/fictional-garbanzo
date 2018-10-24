@@ -42,7 +42,7 @@
 #include <errno.h>
 #endif
 
-#define SERVICE_NAME "Turtle-Service"
+#define SERVICE_NAME "Bloc-Service"
 
 PaymentGateService* ppg;
 
@@ -307,7 +307,7 @@ int main(int argc, char** argv) {
       return 0; //help message requested or so
     }
 
-    Logging::LoggerRef(pg.getLogger(), "main")(Logging::INFO) << "turtle-service v" << PROJECT_VERSION_LONG;
+    Logging::LoggerRef(pg.getLogger(), "main")(Logging::INFO) << "bloc-service v" << PROJECT_VERSION_LONG;
 
     const auto& config = pg.getConfig();
 

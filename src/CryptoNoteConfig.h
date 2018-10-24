@@ -71,7 +71,7 @@ const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(0);
 --print-genesis-tx --genesis-block-reward-address <premine wallet address>
 
 For example:
-TurtleCoind --print-genesis-tx --genesis-block-reward-address TRTLv2Fyavy8CXG8BPEbNeCHFZ1fuDCYCZ3vW5H5LXN4K2M2MHUpTENip9bbavpHvvPwb4NDkBWrNgURAd5DB38FHXWZyoBh4wW
+BLOCd --print-genesis-tx --genesis-block-reward-address TRTLv2Fyavy8CXG8BPEbNeCHFZ1fuDCYCZ3vW5H5LXN4K2M2MHUpTENip9bbavpHvvPwb4NDkBWrNgURAd5DB38FHXWZyoBh4wW
 
 * Take the hash printed, and replace it with the hash below in GENESIS_COINBASE_TX_HEX
 
@@ -83,7 +83,7 @@ TurtleCoind --print-genesis-tx --genesis-block-reward-address TRTLv2Fyavy8CXG8BP
 const char     GENESIS_COINBASE_TX_HEX[]                     = "013201ff000280f4f6905d02fa8ac732a02b2eeb1cb34cc48e4ddb2ab073bf4731bf070c8b569d8430cf1e3180f4f6905d02ede22658d9e9b9f3c1019b4b6a5b2a9797668a99a8ec3355533621b6febeb1a42101097e2d62ad58f6e1463bb3dea7d4cd4221e5fffb2cd3ca69e437c61b9f896d18";
 
 /* This is the unix timestamp of the first "mined" block (technically block 2, not the genesis block)
-   You can get this value by doing "print_block 2" in TurtleCoind. It is used to know what timestamp
+   You can get this value by doing "print_block 2" in BLOCd. It is used to know what timestamp
    to import from when the block height cannot be found in the node or the node is offline. */
 const uint64_t GENESIS_BLOCK_TIMESTAMP                       = 1512800692;
 
@@ -110,7 +110,7 @@ const uint32_t MIXIN_LIMITS_V1_HEIGHT                        = 1;
 const uint32_t MIXIN_LIMITS_V2_HEIGHT                        = 2;
 const uint32_t MIXIN_LIMITS_V3_HEIGHT                        = 200;
 
-/* The mixin to use by default with zedwallet and turtle-service */
+/* The mixin to use by default with zedwallet and bloc-service */
 /* DEFAULT_MIXIN_V0 is the mixin used before MIXIN_LIMITS_V1_HEIGHT is started */
 const uint64_t DEFAULT_MIXIN_V0                              = 0;
 const uint64_t DEFAULT_MIXIN_V1                              = MAXIMUM_MIXIN_V1;
