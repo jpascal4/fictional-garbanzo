@@ -11,8 +11,8 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 ADD https://github.com/just-containers/socklog-overlay/releases/download/v2.1.0-0/socklog-overlay-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/socklog-overlay-amd64.tar.gz -C /
 
-ARG TURTLECOIN_BRANCH=master
-ENV TURTLECOIN_BRANCH=${TURTLECOIN_BRANCH}
+ARG BLOC_BRANCH=master
+ENV BLOC_BRANCH=${BLOC_BRANCH}
 
 # install build dependencies
 # checkout the latest tag
@@ -27,7 +27,7 @@ RUN apt-get update && \
       libboost1.58-all-dev && \
     git clone https://github.com/furiousteam/BLOC.git /src/bloc && \
     cd /src/bloc && \
-    git checkout $TURTLECOIN_BRANCH && \
+    git checkout $BLOC_BRANCH && \
     mkdir build && \
     cd build && \
     cmake -DCMAKE_CXX_FLAGS="-g0 -Os -fPIC -std=gnu++11" .. && \
