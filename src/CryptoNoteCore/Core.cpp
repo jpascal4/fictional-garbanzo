@@ -683,15 +683,15 @@ std::error_code Core::addBlock(const CachedBlock& cachedBlock, RawBlock&& rawBlo
           assert(endpointIndex != 0);
 
 
-           uint64_t reorgSize = chainsLeaves[endpointIndex]->getTopBlockIndex() - chainsLeaves[endpointIndex]->getStartBlockIndex() + 1;
-           std::vector<uint64_t> alt_chain = chainsLeaves[endpointIndex]->getLastTimestamps(reorgSize);
-           std::vector<uint64_t> main_chain = chainsLeaves[endpointIndex]->getLastTimestamps(60, chainsLeaves[endpointIndex]->getTopBlockIndex() - reorgSize, UseGenesis{false});
+           int64_t reorgSize = cache->getTopBlockIndex() - cache->getStartBlockIndex() + 1;
+           std::vector<uint64_t> alt_chain = cache->getLastTimestamps(reorgSize);
+           std::vector<uint64_t> main_chain = mainChainCache->getLastTimestamps(60, cache->getStartBlockIndex(), UseGenesis{false});
 
-           logger(Logging::WARNING) << "DEBUG: reorgSize " << reorgSize;
+           logger(Logging::WARNING) << "DEBUG2: reorgSize " << reorgSize;
            for(size_t i=0; i < alt_chain.size(); i++)
-               logger(Logging::WARNING) << "DEBUG: alt_chain [" << i << "] " << alt_chain[i];
+               logger(Logging::WARNING) << "DEBUG2: alt_chain [" << i << "] " << alt_chain[i];
            for(size_t i=0; i < main_chain.size(); i++)
-               logger(Logging::WARNING) << "DEBUG: main_chain [" << i << "] " << main_chain[i];
+               logger(Logging::WARNING) << "DEBUG2: main_chain [" << i << "] " << main_chain[i];
 
           std::swap(chainsLeaves[0], chainsLeaves[endpointIndex]);
           updateMainChainSet();
