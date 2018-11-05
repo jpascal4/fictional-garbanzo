@@ -700,22 +700,16 @@ std::error_code Core::addBlock(const CachedBlock& cachedBlock, RawBlock&& rawBlo
 
           int64_t reorgSize = cache->getTopBlockIndex() - cache->getStartBlockIndex() + 1;
 		  bool allowReorg = true;
-		  if(reorgSize >= 10 /*TODO:const*/)
+		  if(reorgSize >= CryptoNote::parameters::POISSON_CHECK_TRIGGER)
 		  {
 			  std::vector<uint64_t> alt_chain = cache->getLastTimestamps(reorgSize);
-			  std::vector<uint64_t> main_chain = mainChainCache->getLastTimestamps(60, cache->getStartBlockIndex()-1, UseGenesis{false});
-
-			  logger(Logging::WARNING) << "Poisson check triggered by reorg size " << reorgSize;
-			  for(size_t i=0; i < alt_chain.size(); i++)
-                  logger(Logging::WARNING) << "DEBUG2: alt_chain [" << i << "] " << alt_chain[i];
-              for(size_t i=0; i < main_chain.size(); i++)
-                  logger(Logging::WARNING) << "DEBUG2: main_chain [" << i << "] " << main_chain[i];
+			  std::vector<uint64_t> main_chain = mainChainCache->getLastTimestamps(60, cache->getStartBlockIndex() - 1, UseGenesis{false});
 
 			  uint64_t high_timestamp = alt_chain.back();
 			  std::reverse(main_chain.begin(), main_chain.end());
 
 			  uint64_t failed_checks = 0, i = 0;
-			  for(; i < 60 /*TODO:const*/; i++)
+			  for(; i < CryptoNote::parameters::POISSON_CHECK_DEPTH; i++)
 			  {
 				  uint64_t low_timestamp = main_chain[i];
 
@@ -727,13 +721,11 @@ std::error_code Core::addBlock(const CachedBlock& cachedBlock, RawBlock&& rawBlo
 				  }
 
 				  double lam = double(high_timestamp - low_timestamp) / double(CryptoNote::parameters::DIFFICULTY_TARGET);
-				  if(calc_poisson_ln(lam, reorgSize + i + 1) < -75.0  /*TODO:const*/)
+				  if(calc_poisson_ln(lam, reorgSize + i + 1) < CryptoNote::parameters::POISSON_CHECK_LOGP)
 				  {
 					  logger(Logging::WARNING) << "Poisson check at depth " << i << " failed! delta_t: " << (high_timestamp - low_timestamp) << " size: " << reorgSize + i + 1;
 					  failed_checks++;
 				  }
-				  else
-					  logger(Logging::WARNING) << "Poisson check at depth " << i << " passed! delta_t: " << (high_timestamp - low_timestamp) << " size: " << reorgSize + i + 1;
 			  }
 
 			  //i is number of checks now

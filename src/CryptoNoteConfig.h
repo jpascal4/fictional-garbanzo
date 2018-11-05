@@ -165,6 +165,10 @@ const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_O
 static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
 static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 
+const int64_t POISSON_CHECK_TRIGGER = 10; //Reorg size to trigger check
+const int64_t POISSON_CHECK_DEPTH = 60; //Reorg size to trigger check
+const double POISSON_CHECK_LOGP = -75.0; //Reject blocks that are less likely than e^-75.0
+
 /* Block heights we are going to have hard forks at */
 const uint64_t FORK_HEIGHTS[] =
 {	
